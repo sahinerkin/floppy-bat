@@ -17,9 +17,9 @@ def main():
                 run = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    my_birb.velocity = 15
+                    my_birb.jump()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                my_birb.velocity = 15
+                my_birb.jump()
 
         screen.fill((0, 255, 255))
         my_birb.draw(screen)
