@@ -3,15 +3,21 @@ import pygame
 GRAVITY = -1
 MAX_VELOCITY = 25
 
+
 class Bat():
-    def __init__(self, pos_x, pos_y):
+    _instance = None
+
+    def __init__(self, pos_x, pos_y, jump_vel=15):
         self._x = pos_x
         self._y = pos_y
+        self._jump_vel = jump_vel
         self._velocity = 0
         self.sprites_list = Bat.load_sprites()
         self.sprites_length = len(self.sprites_list)
         self.sprite_idx = 0
         self.sprite_tick = -1
+
+        Bat._instance = self
 
     @property
     def x(self):
@@ -29,9 +35,13 @@ class Bat():
     def velocity(self, new_vel):
         self._velocity = new_vel if abs(new_vel) < abs(MAX_VELOCITY) else MAX_VELOCITY * sign(new_vel)
 
+    @staticmethod
+    def getInstance():
+        return Bat._instance
+
 
     def jump(self):
-        self.velocity = 15
+        self.velocity = self._jump_vel
         self.sprite_tick = 0
         self.sprite_idx = 0
 
@@ -67,6 +77,9 @@ class Bat():
             sprites_list.append(pygame.transform.flip(pygame.transform.scale(img_original, (72, 72)), flip_x=True, flip_y=False))
         
         return sprites_list
+    
+    def die(self):
+        self._jump_vel = 0
 
 
 def sign(num):
