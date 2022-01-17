@@ -1,21 +1,21 @@
 import pygame
-
-GRAVITY = -1
-MAX_VELOCITY = 25
-
+from numbers import Number
+from constants import GRAVITY, CLOCK_FREQUENCY
+MAX_VELOCITY = 4000
 
 class Bat():
     _instance = None
 
-    def __init__(self, pos_x, pos_y, jump_vel=15):
-        self._x = pos_x
-        self._y = pos_y
+    def __init__(self, pos_x, pos_y, jump_vel=900):
+        self._x: Number = pos_x
+        self._y: Number = pos_y
         self._jump_vel = jump_vel
         self._velocity = 0
         self.sprites_list = Bat.load_sprites()
         self.sprites_length = len(self.sprites_list)
         self.sprite_idx = 0
         self.sprite_tick = -1
+        self._is_alive = True
 
         Bat._instance = self
 
@@ -36,18 +36,24 @@ class Bat():
         self._velocity = new_vel if abs(new_vel) < abs(MAX_VELOCITY) else MAX_VELOCITY * sign(new_vel)
 
     @staticmethod
-    def getInstance():
+    def getInstance() -> "Bat":
         return Bat._instance
 
 
-    def jump(self):
-        self.velocity = self._jump_vel
+    def jump(self, vel=None):
+        if not self._is_alive:
+            return
+
+        self.velocity = self._jump_vel if vel is None else vel
         self.sprite_tick = 0
         self.sprite_idx = 0
 
     def tick(self):
-        self.velocity += GRAVITY
-        self._y -= self.velocity
+        self.velocity += GRAVITY/CLOCK_FREQUENCY
+        self._y -= self.velocity/CLOCK_FREQUENCY
+
+        if not self._is_alive:
+            return
 
         if self.sprite_tick > -1:
             self.sprite_tick += 1
@@ -65,21 +71,25 @@ class Bat():
 
     def draw(self, screen:pygame.Surface):
         self.sprite = self.sprites_list[self.sprite_idx]
-        self.sprite_rect = self.sprite.get_rect(center=(self.x-15, self.y))
+        self.sprite_rect = self.sprite.get_rect(center=(self.x, self.y))
+        self.coll_rect = pygame.Rect(self.x, self.y-10, 25, 25)
+        # pygame.draw.rect(screen, (255,0,0), rect=self.coll_rect)
         screen.blit(self.sprite, self.sprite_rect)
         # pygame.draw.circle(screen, (255, 255, 0), (self.x, self.y), 15)
 
     def load_sprites():
         sprites_list = []
 
-        for i in range(5):
-            img_original = pygame.image.load(f"./assets/bat/frames/bat_32x32_f_{i}.png")
+        for i in range(6):
+            img_original = pygame.image.load(f"./assets/bat/frames/bat_30x30_f_{i}.png").convert_alpha()
             sprites_list.append(pygame.transform.flip(pygame.transform.scale(img_original, (72, 72)), flip_x=True, flip_y=False))
         
         return sprites_list
     
     def die(self):
-        self._jump_vel = 0
+        self.jump(600)
+        self._is_alive = False
+        self.sprite_idx = 5
 
 
 def sign(num):

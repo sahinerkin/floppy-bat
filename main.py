@@ -1,19 +1,19 @@
 import pygame
 from bat import Bat
-from pipe import Pipe, PipeType
+from pipe_generator import PipeGenerator
+from constants import CLOCK_FREQUENCY, SCREEN_SIZE
 
 pygame.init()
 
-screen_size = (400, 700)
-screen = pygame.display.set_mode(screen_size)
+screen = pygame.display.set_mode(SCREEN_SIZE)
+screen.set_alpha(pygame.SRCALPHA)
 pygame.display.set_caption("Floppy Bat")
 clock = pygame.time.Clock()
-my_bat = Bat(2*screen_size[0]/5, screen_size[1]/3)
+my_bat = Bat(2*SCREEN_SIZE[0]/5, SCREEN_SIZE[1]/3)
+my_gen = PipeGenerator(time_interval_ms=3000)
 
 def main():
     run = True
-    pipes = []
-    i = 0
     while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -26,25 +26,16 @@ def main():
 
         screen.fill((0, 255, 255))
 
-        if i == 120:
-            my_pipe = Pipe(pos_x=500, length=200, velocity=2, type=PipeType.TOP_PIPE)
-            my_pipe2 = Pipe(pos_x=500, length=200, velocity=2, type=PipeType.BOTTOM_PIPE)
-            pipes += [my_pipe, my_pipe2]
-            i = 0
-        
-        for pipe in pipes:
-            pipe.draw(screen)
-
+        my_gen.draw_pipes(screen)
         my_bat.draw(screen)
+
 
         pygame.display.flip()
 
-        for pipe in pipes:
-            pipe.tick()
-
         my_bat.tick()
-        clock.tick(60)
-        i += 1
+        my_gen.tick()
+
+        clock.tick(CLOCK_FREQUENCY)
     
 
 if __name__ == "__main__":
