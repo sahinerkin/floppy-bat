@@ -1,2 +1,2 @@
-# floppy_birb
-Floppy Birb is a floppy birb
+# floppy_bat
+Floppy Bat is a floppy bat
