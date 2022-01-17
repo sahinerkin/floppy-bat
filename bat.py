@@ -3,15 +3,15 @@ import pygame
 GRAVITY = -1
 MAX_VELOCITY = 25
 
-class Birb():
+class Bat():
     def __init__(self, pos_x, pos_y):
         self._x = pos_x
         self._y = pos_y
         self._velocity = 0
-        self.load_sprites()
-        self.current_sprite = 0
+        self.sprites_list = Bat.load_sprites()
+        self.sprites_length = len(self.sprites_list)
+        self.sprite_idx = 0
         self.sprite_tick = -1
-        self.sprite_refresh = 6
 
     @property
     def x(self):
@@ -33,7 +33,7 @@ class Birb():
     def jump(self):
         self.velocity = 15
         self.sprite_tick = 0
-        self.current_sprite = 0
+        self.sprite_idx = 0
 
     def tick(self):
         self.velocity += GRAVITY
@@ -42,26 +42,31 @@ class Birb():
         if self.sprite_tick > -1:
             self.sprite_tick += 1
 
-        if self.sprite_tick >= self.sprite_refresh:
+        if self.sprite_tick >= self.sprites_length:
             self.sprite_tick = 0
-            self.current_sprite += 1
+            self.sprite_idx += 1
 
-        if self.current_sprite > 4:
-            self.current_sprite = 0
+        if self.sprite_idx > 4:
             self.sprite_tick = -1
+            self.sprite_idx = 0
 
-    def draw(self, screen):
-        sprite = self.sprites[self.current_sprite]
-        sprite_rect = sprite.get_rect(center=(self.x-15, self.y))
-        screen.blit(sprite, sprite_rect)
+        # print(self.sprite_rect.collidedict())
+
+
+    def draw(self, screen:pygame.Surface):
+        self.sprite = self.sprites_list[self.sprite_idx]
+        self.sprite_rect = self.sprite.get_rect(center=(self.x-15, self.y))
+        screen.blit(self.sprite, self.sprite_rect)
         # pygame.draw.circle(screen, (255, 255, 0), (self.x, self.y), 15)
 
-    def load_sprites(self):
-        self.sprites = []
+    def load_sprites():
+        sprites_list = []
 
         for i in range(5):
             img_original = pygame.image.load(f"./assets/bat/frames/bat_32x32_f_{i}.png")
-            self.sprites.append(pygame.transform.flip(pygame.transform.scale(img_original, (72, 72)), flip_x=True, flip_y=False))
+            sprites_list.append(pygame.transform.flip(pygame.transform.scale(img_original, (72, 72)), flip_x=True, flip_y=False))
+        
+        return sprites_list
 
 
 def sign(num):
