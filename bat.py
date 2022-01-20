@@ -72,6 +72,7 @@ class Bat():
     def draw(self, screen:pygame.Surface):
         self.sprite = self.sprites_list[self.sprite_idx]
         self.sprite_rect = self.sprite.get_rect(center=(self.x, self.y))
+        # self.coll_rect = pygame.Rect(self.x, self.y-10, 25, 25)
         self.coll_rect = pygame.Rect(self.x, self.y-10, 25, 25)
         # pygame.draw.rect(screen, (255,0,0), rect=self.coll_rect)
         screen.blit(self.sprite, self.sprite_rect)

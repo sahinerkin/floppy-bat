@@ -19,7 +19,7 @@ class Pipe():
         self._velocity = velocity
         self._type = type
 
-        self.pipe_body_sprite = pygame.transform.scale(pipe_body_original.convert_alpha(), (80, self._length))
+        self.pipe_body_sprite = pygame.transform.scale(pipe_body_original.convert_alpha(), (80, self._length-35))
         self.pipe_exit_sprite = pygame.transform.scale(pipe_exit_original.convert_alpha(), (80, 35))
 
         if self._type == PipeType.TOP_PIPE:
@@ -30,10 +30,10 @@ class Pipe():
     def draw(self, screen:pygame.Surface):
         if self._type == PipeType.TOP_PIPE:
             self.pipe_body_rect = self.pipe_body_sprite.get_rect(midtop=(self._x, 0))
-            self.pipe_exit_rect = self.pipe_exit_sprite.get_rect(midtop=(self._x, self._length))   
+            self.pipe_exit_rect = self.pipe_exit_sprite.get_rect(midtop=(self._x, self._length-35))   
         else:
             self.pipe_body_rect = self.pipe_body_sprite.get_rect(midbottom=(self._x, screen.get_height()))
-            self.pipe_exit_rect = self.pipe_exit_sprite.get_rect(midbottom=(self._x, screen.get_height()-self._length))
+            self.pipe_exit_rect = self.pipe_exit_sprite.get_rect(midbottom=(self._x, screen.get_height()-self._length+35))
         
         screen.blit(self.pipe_body_sprite, self.pipe_body_rect)
         screen.blit(self.pipe_exit_sprite, self.pipe_exit_rect)

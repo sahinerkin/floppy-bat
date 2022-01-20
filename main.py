@@ -1,6 +1,6 @@
 import pygame
 from bat import Bat
-from pipe_generator import PipeGenerator
+from pipe_spawner import PipeSpawner
 from constants import CLOCK_FREQUENCY, SCREEN_SIZE
 
 pygame.init()
@@ -10,7 +10,8 @@ screen.set_alpha(pygame.SRCALPHA)
 pygame.display.set_caption("Floppy Bat")
 clock = pygame.time.Clock()
 my_bat = Bat(2*SCREEN_SIZE[0]/5, SCREEN_SIZE[1]/3)
-my_gen = PipeGenerator(time_interval_ms=3000)
+
+my_gen = PipeSpawner(spawn_interval_ms=3000, starting_velocity=140, accelerate_interval_ms=5000, accelerate_amount=3)
 
 def main():
     run = True
@@ -28,12 +29,12 @@ def main():
 
         my_gen.draw_pipes(screen)
         my_bat.draw(screen)
-
+        my_bat.tick()
+        my_gen.tick()
 
         pygame.display.flip()
 
-        my_bat.tick()
-        my_gen.tick()
+
 
         clock.tick(CLOCK_FREQUENCY)
     
