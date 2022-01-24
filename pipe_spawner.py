@@ -1,6 +1,5 @@
 import random
 
-import pygame
 from pipe import Pipe, PipeType
 from constants import SCREEN_SIZE, CLOCK_FREQUENCY
 from score_collider import ScoreCollider
@@ -12,22 +11,34 @@ from score_collider import ScoreCollider
 
 
 class PipeSpawner():
+
+    _instance = None
+
     current_scroll_vel = 0
     def __init__(self, spawn_interval_ms, starting_velocity, accelerate_interval_ms, accelerate_amount):
 
+        PipeSpawner._instance = self
+
         self._spawn_interval_ms = spawn_interval_ms
         self._spawn_timer_limit = spawn_interval_ms/1000 * CLOCK_FREQUENCY
-        self._spawn_timer_count = self._spawn_timer_limit
 
         self._accelerate_interval_ms = accelerate_interval_ms
         self._accelerate_amount = accelerate_amount
         self._accelerate_timer_limit = accelerate_interval_ms/1000 * CLOCK_FREQUENCY
+
+        self._starting_velocity = starting_velocity
+
+
+    def reset(self):
+        self._spawn_timer_count = self._spawn_timer_limit
         self._accelerate_timer_count = 0
-
         self._pipes = []
-        PipeSpawner.current_scroll_vel = starting_velocity
-
         self._score_colliders = []
+        PipeSpawner.current_scroll_vel = self._starting_velocity
+
+    @staticmethod
+    def getInstance() -> "PipeSpawner":
+        return PipeSpawner._instance
 
     def tick(self):
         self._spawn_timer_count += 1
@@ -65,11 +76,11 @@ class PipeSpawner():
                 type=PipeType.BOTTOM_PIPE))
 
             self._score_colliders.append(
-                ScoreCollider(SCREEN_SIZE[0]+100,
-                              pipes_midpoint-pipes_space//2,
-                              40,
-                              pipes_space,
-                              PipeSpawner.current_scroll_vel))
+                ScoreCollider(left=SCREEN_SIZE[0]+100,
+                              top=pipes_midpoint-pipes_space//2,
+                              width=40,
+                              height=pipes_space,
+                              velocity=PipeSpawner.current_scroll_vel))
     
     def draw_pipes(self, screen):
         for pipe in self._pipes:

@@ -1,6 +1,6 @@
 from enum import Enum
-from bat import Bat
 import pygame
+from bat import Bat
 
 from constants import CLOCK_FREQUENCY
 
@@ -42,5 +42,6 @@ class Pipe():
         self._x -= self._velocity/CLOCK_FREQUENCY
         if self.pipe_body_rect.colliderect(Bat.getInstance().coll_rect) \
         or self.pipe_exit_rect.colliderect(Bat.getInstance().coll_rect):
-            Bat.getInstance().die()
+            if Bat.getInstance()._is_alive:
+                Bat.getInstance().die()
     
