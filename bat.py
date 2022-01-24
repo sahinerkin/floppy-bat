@@ -1,6 +1,6 @@
 import pygame
 from numbers import Number
-from constants import GRAVITY, CLOCK_FREQUENCY
+from constants import GRAVITY, CLOCK_FREQUENCY, SCREEN_SIZE
 MAX_VELOCITY = 4000
 
 class Bat():
@@ -51,6 +51,9 @@ class Bat():
     def tick(self):
         self.velocity += GRAVITY/CLOCK_FREQUENCY
         self._y -= self.velocity/CLOCK_FREQUENCY
+
+        if self._y < 10 or self._y > SCREEN_SIZE[1]-10:
+            self.die()
 
         if not self._is_alive:
             return
